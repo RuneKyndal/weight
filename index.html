@@ -9,14 +9,14 @@
     <meta name="theme-color" content="#000">
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="manifest" href="manifest.json">
-    <title>Bell 214ST W&amp;B v1.95</title>
+    <title>Bell 214ST W&amp;B v1.96</title>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
         body { margin: 0; padding: 0; background: #fff; color: #000; font-family: sans-serif; position: fixed; width: 100%; height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .page { width: 100%; padding: 12px 10px 30px 10px; }
         #flight-page { display: none; background: #f0f0f0; min-height: 100vh; }
 
-        /* --- Page 1 Styles (Reverted) --- */
+        /* --- Page 1 Styles (Reverted Layout) --- */
         h2 { text-align: center; margin: 0 0 12px 0; font-size: clamp(1rem, 5vw, 1.3rem); }
         .input-block { border: 2px solid #000; border-radius: 10px; margin-bottom: 10px; overflow: hidden; background: #fff; }
         .input-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid #ddd; gap: 8px; }
@@ -45,16 +45,15 @@
         .r-val.warn { color: #cc7700; }
         .r-val.danger { color: #cc0000; }
 
-        /* --- Page 2 Styles (Updated Bubbles) --- */
+        /* --- Page 2 Styles --- */
         .full-bubble { border: 2px solid #000; border-radius: 12px; margin-bottom: 12px; background: #fff; overflow: hidden; padding: 15px; text-align: center; }
         .label-sm { font-size: 0.8rem; font-weight: bold; color: #666; text-transform: uppercase; display: block; margin-bottom: 4px; }
         .val-lg { font-size: 3.2rem; font-weight: bold; display: block; line-height: 1; letter-spacing: -1px; }
-        .val-md { font-size: 1.8rem; font-weight: bold; display: block; color: #444; margin-top: 5px; }
-        .val-lg.ok, .val-md.ok { color: #008800; }
-        .val-lg.danger, .val-md.danger { color: #cc0000; }
-        .val-lg.warn, .val-md.warn { color: #cc7700; }
+        .val-lg.ok { color: #008800; }
+        .val-lg.danger { color: #cc0000; }
+        .val-lg.warn { color: #cc7700; }
 
-        /* General UI */
+        /* General UI Controls */
         input[type="range"] { -webkit-appearance: none; width: 100%; height: 18px; border-radius: 9px; background: #ddd; outline: none; margin: 20px 0; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 48px; height: 48px; border-radius: 50%; background: #000; border: 3px solid #fff; box-shadow: 0 0 0 2px #000; }
         select { background: #f5f5f5; border: 2px solid #000; border-radius: 6px; color: #000; font-size: 1.1rem; font-weight: bold; padding: 8px; text-align: right; outline: none; }
@@ -111,26 +110,28 @@
     <div class="full-bubble">
         <span class="label-sm">Active Fuel Load</span>
         <span class="val-lg" id="fly-fuel-lbs">-- lbs</span>
-        <span class="val-md" id="fly-fuel-kg">-- kg</span>
         <input type="range" id="fly-fuel-slider" min="500" max="3000" step="50">
     </div>
 
     <div class="full-bubble">
-        <span class="label-sm">Live Payload</span>
+        <span class="label-sm">Payload lbs</span>
         <span class="val-lg ok" id="fly-lbs">-- lbs</span>
-        <span class="val-md ok" id="fly-kg">-- kg</span>
+    </div>
+
+    <div class="full-bubble">
+        <span class="label-sm">Payload kg</span>
+        <span class="val-lg ok" id="fly-kg">-- kg</span>
     </div>
 </div>
 
 <script>
     var MAX_GROSS = 17500;
     
-    // Elements
     var emptyInput = document.getElementById('empty-weight'), crewInput = document.getElementById('crew-gear'), fuelSlider = document.getElementById('fuel-slider');
     var basicAcSpan = document.getElementById('basic-ac'), fuelDisplay = document.getElementById('fuel-display'), totalWtEl = document.getElementById('total-weight'), warnBanner = document.getElementById('warn-banner');
     var resLbs = document.getElementById('res-lbs'), resLiters = document.getElementById('res-liters');
 
-    var flyFuelSlider = document.getElementById('fly-fuel-slider'), flyFuelLbs = document.getElementById('fly-fuel-lbs'), flyFuelKg = document.getElementById('fly-fuel-kg');
+    var flyFuelSlider = document.getElementById('fly-fuel-slider'), flyFuelLbs = document.getElementById('fly-fuel-lbs');
     var flyLbs = document.getElementById('fly-lbs'), flyKg = document.getElementById('fly-kg'), timerEl = document.getElementById('flight-timer'), burnSelect = document.getElementById('burn-rate-select');
 
     var flightStartTime = null, burnReferenceTime = null, currentFlightFuel = 0, timerInterval = null;
@@ -196,13 +197,11 @@
         var payload = MAX_GROSS - (empty + crew + fuel);
         
         flyFuelLbs.textContent = fmt(fuel) + ' lbs';
-        flyFuelKg.textContent = fmt(toKg(fuel)) + ' kg';
         
         var cls = payload < 0 ? 'val-lg danger' : (payload < 500 ? 'val-lg warn' : 'val-lg ok');
-        var clsMd = payload < 0 ? 'val-md danger' : (payload < 500 ? 'val-md warn' : 'val-md ok');
         flyLbs.textContent = payload < 0 ? 'OVER' : fmt(payload) + ' lbs';
         flyKg.textContent = payload < 0 ? '-- kg' : fmt(toKg(payload)) + ' kg';
-        flyLbs.className = cls; flyKg.className = clsMd;
+        flyLbs.className = cls; flyKg.className = cls;
     }
 
     flyFuelSlider.addEventListener('input', function() {
