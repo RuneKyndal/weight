@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#000">
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="manifest" href="manifest.json">
-    <title>Bell 214ST W&amp;B v1.97</title>
+    <title>Bell 214ST W&amp;B v1.98</title>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
         body { margin: 0; padding: 0; background: #fff; color: #000; font-family: sans-serif; position: fixed; width: 100%; height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -32,7 +32,7 @@
         .total-val.danger { color: #cc0000; }
         #warn-banner { display: none; background: #cc0000; color: #fff; text-align: center; padding: 8px 12px; border-radius: 8px; font-weight: bold; font-size: clamp(0.75rem, 3.5vw, 0.9rem); margin-bottom: 10px; }
         .fuel-section { border: 2px solid #000; border-radius: 10px; padding: 12px 12px 16px 12px; margin-bottom: 10px; background: #fff; }
-        .fuel-big { font-size: clamp(2.5rem, 15vw, 4rem); font-weight: bold; text-align: center; line-height: 1; margin-bottom: 10px; letter-spacing: -1px; }
+        .fuel-big { font-size: clamp(2rem, 11vw, 3.2rem); font-weight: bold; text-align: center; line-height: 1; margin-bottom: 10px; letter-spacing: -1px; }
         .fuel-big span { font-size: clamp(1rem, 4vw, 1.2rem); font-weight: normal; color: #666; margin-left: 4px; }
         .result-section { border: 2px solid #000; border-radius: 10px; overflow: hidden; margin-bottom: 10px; background: #fff; }
         .result-title { background: #000; color: #fff; text-align: center; padding: 8px; font-size: clamp(0.65rem, 2.8vw, 0.8rem); font-weight: bold; text-transform: uppercase; }
@@ -68,9 +68,9 @@
 
 <div id="calc-page" class="page">
     <h2>214ST W&amp;B</h2>
-    <div id="warn-banner">⚠ OVER MAX GROSS</div>
+    <div id="warn-banner">!! OVER MAX GROSS !!</div>
     <div class="input-block">
-        <div class="input-row"><span class="input-label">Max Gross</span><span class="input-unit">lbs</span><span class="fixed-val">17,500</span></div>
+        <div class="input-row"><span class="input-label">Max Gross</span><span class="input-unit">lbs</span><input type="number" id="max-gross" value="17500"></div>
         <div class="input-row"><span class="input-label">Empty Weight</span><span class="input-unit">lbs</span><input type="number" id="empty-weight" value="10000"></div>
         <div class="input-row"><span class="input-label">Crew + Gear</span><span class="input-unit">lbs</span><input type="number" id="crew-gear" value="400"></div>
         <div class="input-row"><span class="input-label">Basic A/C</span><span class="input-unit">lbs</span><span class="fixed-val" id="basic-ac">10,400</span></div>
@@ -126,9 +126,7 @@
 </div>
 
 <script>
-    var MAX_GROSS = 17500;
-    
-    var emptyInput = document.getElementById('empty-weight'), crewInput = document.getElementById('crew-gear'), fuelSlider = document.getElementById('fuel-slider');
+    var maxGrossInput = document.getElementById('max-gross'), emptyInput = document.getElementById('empty-weight'), crewInput = document.getElementById('crew-gear'), fuelSlider = document.getElementById('fuel-slider');
     var basicAcSpan = document.getElementById('basic-ac'), fuelDisplay = document.getElementById('fuel-display'), totalWtEl = document.getElementById('total-weight'), warnBanner = document.getElementById('warn-banner');
     var resLbs = document.getElementById('res-lbs'), resLiters = document.getElementById('res-liters');
 
@@ -141,14 +139,15 @@
     function lbsToLiters(lbs) { return Math.round(lbs * 0.4536); }
 
     function update() {
+        var currentMaxGross = parseFloat(maxGrossInput.value) || 17500;
         var empty = parseFloat(emptyInput.value) || 0, crew = parseFloat(crewInput.value) || 0, fuel = parseFloat(fuelSlider.value) || 0;
-        var basic = empty + crew, total = basic + fuel, payload = MAX_GROSS - total;
+        var basic = empty + crew, total = basic + fuel, payload = currentMaxGross - total;
         
         basicAcSpan.textContent = fmt(basic);
         fuelDisplay.innerHTML = 'Fuel ' + fmt(fuel) + ' <span>lbs</span>';
         totalWtEl.textContent = fmt(total);
-        totalWtEl.className = total > MAX_GROSS ? 'total-val danger' : 'total-val ok';
-        warnBanner.style.display = total > MAX_GROSS ? 'block' : 'none';
+        totalWtEl.className = total > currentMaxGross ? 'total-val danger' : 'total-val ok';
+        warnBanner.style.display = total > currentMaxGross ? 'block' : 'none';
 
         var cls = payload < 0 ? 'r-val danger' : (payload < 500 ? 'r-val warn' : 'r-val ok');
         resLbs.textContent = payload < 0 ? 'OVER' : fmt(payload);
@@ -180,7 +179,7 @@
         var now = Date.now();
         var totalElapsedSec = Math.floor((now - flightStartTime) / 1000);
         var h = Math.floor(totalElapsedSec / 3600), m = Math.floor((totalElapsedSec % 3600) / 60), s = totalElapsedSec % 60;
-        timerEl.textContent = [h, m, s].map(v => v.toString().padStart(2, '0')).join(':');
+        timerEl.textContent = [h, m, s].map(function(v) { return v.toString().padStart(2, '0'); }).join(':');
 
         var burnRate = parseFloat(burnSelect.value);
         var burnElapsedHours = (now - burnReferenceTime) / (1000 * 60 * 60);
@@ -192,9 +191,10 @@
     }
 
     function updateFlightDisplay() {
+        var currentMaxGross = parseFloat(maxGrossInput.value) || 17500;
         var fuel = currentFlightFuel;
         var empty = parseFloat(emptyInput.value) || 0, crew = parseFloat(crewInput.value) || 0;
-        var payload = MAX_GROSS - (empty + crew + fuel);
+        var payload = currentMaxGross - (empty + crew + fuel);
         
         flyFuelLbs.textContent = fmt(fuel) + ' lbs';
         
@@ -214,6 +214,7 @@
         updateFlightDisplay();
     });
 
+    maxGrossInput.addEventListener('input', update);
     fuelSlider.addEventListener('input', update);
     emptyInput.addEventListener('input', update);
     crewInput.addEventListener('input', update);
