@@ -27,6 +27,8 @@
             padding: 12px 10px 30px 10px;
         }
 
+        #flight-page { display: none; background: #f0f0f0; min-height: 100vh; }
+
         /* ── Header ── */
         h2 {
             text-align: center;
@@ -40,6 +42,7 @@
             border-radius: 10px;
             margin-bottom: 10px;
             overflow: hidden;
+            background: #fff;
         }
 
         .input-row {
@@ -87,7 +90,7 @@
             -webkit-appearance: none;
         }
 
-        /* ── Total weight row (between inputs and slider) ── */
+        /* ── Total weight row ── */
         .total-row {
             display: flex;
             align-items: center;
@@ -96,6 +99,7 @@
             border: 2px solid #000;
             border-radius: 10px;
             margin-bottom: 10px;
+            background: #fff;
         }
         .total-label {
             font-size: clamp(0.75rem, 3.5vw, 0.95rem);
@@ -127,6 +131,7 @@
             border-radius: 10px;
             padding: 12px 12px 16px 12px;
             margin-bottom: 10px;
+            background: #fff;
         }
 
         .fuel-top {
@@ -143,7 +148,6 @@
             color: #666;
         }
 
-        /* Big fuel number shown above thumb */
         .fuel-big {
             font-size: clamp(2rem, 12vw, 3.5rem);
             font-weight: bold;
@@ -159,20 +163,19 @@
             margin-left: 4px;
         }
 
-        /* Full-width slider */
         input[type="range"] {
             -webkit-appearance: none;
             width: 100%;
-            height: 8px;
-            border-radius: 4px;
+            height: 12px;
+            border-radius: 6px;
             background: #ddd;
             outline: none;
-            margin: 0;
+            margin: 10px 0;
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: #000;
             cursor: pointer;
@@ -194,6 +197,7 @@
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 10px;
+            background: #fff;
         }
 
         .result-title {
@@ -245,17 +249,49 @@
             display: block;
             margin-top: 4px;
         }
+
+        /* ── Buttons ── */
+        .btn-go {
+            width: 100%;
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 10px;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        .btn-back {
+            background: #666;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* ── Flight Timer Page Specific ── */
+        .timer-display {
+            font-size: 4rem;
+            font-weight: bold;
+            text-align: center;
+            font-family: monospace;
+            margin: 10px 0;
+            color: #000;
+        }
     </style>
 </head>
 <body>
-<div class="page">
 
+<div id="calc-page" class="page">
     <h2>BELL 214ST — W&amp;B</h2>
 
-    <!-- Warning -->
     <div id="warn-banner">⚠ OVER MAX GROSS WEIGHT</div>
 
-    <!-- Fixed + editable inputs -->
     <div class="input-block">
         <div class="input-row">
             <span class="input-label">Max Gross</span>
@@ -279,7 +315,6 @@
         </div>
     </div>
 
-    <!-- Total weight -->
     <div class="total-row">
         <span class="total-label">Total Weight (with fuel)</span>
         <div style="display:flex;align-items:baseline;gap:6px;">
@@ -288,20 +323,18 @@
         </div>
     </div>
 
-    <!-- Fuel slider -->
     <div class="fuel-section">
         <div class="fuel-top">
             <span class="fuel-title">Fuel Load</span>
         </div>
         <div class="fuel-big" id="fuel-display">2,000 <span>lbs</span></div>
-        <input type="range" id="fuel-slider" min="500" max="3000" step="100" value="2000">
+        <input type="range" id="fuel-slider" min="500" max="3000" step="10" value="2000">
         <div class="fuel-minmax">
             <span>500 lbs</span>
             <span>3,000 lbs</span>
         </div>
     </div>
 
-    <!-- Payload results -->
     <div class="result-section">
         <div class="result-title">Available Payload</div>
         <div class="result-grid">
@@ -318,6 +351,42 @@
         </div>
     </div>
 
+    <button class="btn-go" onclick="showFlightPage()">GO FLY</button>
+</div>
+
+<div id="flight-page" class="page">
+    <button class="btn-back" onclick="showCalcPage()">BACK</button>
+    <h2>FLIGHT TRACKER</h2>
+    
+    <div class="timer-display" id="flight-timer">00:00:00</div>
+
+    <div class="result-section">
+        <div class="result-title">Current Available Payload</div>
+        <div class="result-grid">
+            <div class="result-item">
+                <span class="r-label">Payload</span>
+                <span class="r-val ok" id="fly-lbs">--</span>
+                <span class="r-unit">lbs</span>
+            </div>
+            <div class="result-item">
+                <span class="r-label">Water</span>
+                <span class="r-val ok" id="fly-liters">--</span>
+                <span class="r-unit">liters</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="fuel-section">
+        <div class="fuel-top">
+            <span class="fuel-title">Active Fuel State</span>
+        </div>
+        <div class="fuel-big" id="fly-fuel-display">-- <span>lbs</span></div>
+        <input type="range" id="fly-fuel-slider" min="500" max="3000" step="10">
+        <div class="fuel-minmax">
+            <span>500 lbs</span>
+            <span>3,000 lbs</span>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -329,7 +398,9 @@
         });
     }
 
-    var MAX_GROSS   = 17500;
+    var MAX_GROSS      = 17500;
+    var FUEL_BURN_RATE = 800; // lbs per hour
+
     var emptyInput  = document.getElementById('empty-weight');
     var crewInput   = document.getElementById('crew-gear');
     var fuelSlider  = document.getElementById('fuel-slider');
@@ -340,11 +411,21 @@
     var resLbs      = document.getElementById('res-lbs');
     var resLiters   = document.getElementById('res-liters');
 
+    // Page 2 Elements
+    var flyFuelSlider = document.getElementById('fly-fuel-slider');
+    var flyFuelDisplay = document.getElementById('fly-fuel-display');
+    var flyLbs = document.getElementById('fly-lbs');
+    var flyLiters = document.getElementById('fly-liters');
+    var timerEl = document.getElementById('flight-timer');
+
+    var flightStartTime = null;
+    var timerInterval = null;
+    var startFuel = 0;
+
     function fmt(n) {
         return Math.round(n).toLocaleString();
     }
 
-    // 1 lb water = 0.4536 liters (density of water ~1 kg/L, 1 lb = 0.4536 kg)
     function lbsToLiters(lbs) {
         return Math.round(lbs * 0.4536);
     }
@@ -357,14 +438,10 @@
         var total   = basic + fuel;
         var payload = MAX_GROSS - total;
 
-        // Basic A/C
         basicAcSpan.textContent = fmt(basic);
-
-        // Fuel display (big number above slider)
         fuelDisplay.innerHTML = fmt(fuel) + ' <span>lbs</span>';
-
-        // Total weight
         totalWtEl.textContent = fmt(total);
+        
         if (total > MAX_GROSS) {
             totalWtEl.className = 'total-val danger';
             warnBanner.style.display = 'block';
@@ -373,15 +450,82 @@
             warnBanner.style.display = 'none';
         }
 
-        // Payload colour
         var cls = payload < 0 ? 'r-val danger' : (payload < 500 ? 'r-val warn' : 'r-val ok');
-
-        resLbs.textContent    = payload < 0 ? 'OVER' : fmt(payload);
-        resLbs.className      = cls;
-
+        resLbs.textContent = payload < 0 ? 'OVER' : fmt(payload);
+        resLbs.className = cls;
         resLiters.textContent = payload < 0 ? '--' : lbsToLiters(payload);
-        resLiters.className   = cls;
+        resLiters.className = cls;
     }
+
+    // --- Flight Logic ---
+
+    function showFlightPage() {
+        document.getElementById('calc-page').style.display = 'none';
+        document.getElementById('flight-page').style.display = 'block';
+        
+        startFuel = parseFloat(fuelSlider.value);
+        flyFuelSlider.value = startFuel;
+        flightStartTime = Date.now();
+        
+        updateFlightDisplay();
+        
+        timerInterval = setInterval(tick, 1000);
+    }
+
+    function showCalcPage() {
+        clearInterval(timerInterval);
+        document.getElementById('flight-page').style.display = 'none';
+        document.getElementById('calc-page').style.display = 'block';
+        
+        // Update main slider with current flight state
+        fuelSlider.value = flyFuelSlider.value;
+        update();
+    }
+
+    function tick() {
+        var now = Date.now();
+        var elapsedMs = now - flightStartTime;
+        
+        // Update Timer
+        var s = Math.floor(elapsedMs / 1000);
+        var h = Math.floor(s / 3600);
+        var m = Math.floor((s % 3600) / 60);
+        var sec = s % 60;
+        timerEl.textContent = [h, m, sec].map(v => v.toString().padStart(2, '0')).join(':');
+
+        // Automatic Fuel Burn Calculation
+        var elapsedHours = elapsedMs / (1000 * 60 * 60);
+        var fuelBurned = elapsedHours * FUEL_BURN_RATE;
+        var currentFuel = Math.max(500, startFuel - fuelBurned);
+        
+        flyFuelSlider.value = currentFuel;
+        updateFlightDisplay();
+    }
+
+    function updateFlightDisplay() {
+        var currentFuel = parseFloat(flyFuelSlider.value);
+        var empty = parseFloat(emptyInput.value) || 0;
+        var crew = parseFloat(crewInput.value) || 0;
+        var total = empty + crew + currentFuel;
+        var payload = MAX_GROSS - total;
+
+        flyFuelDisplay.innerHTML = fmt(currentFuel) + ' <span>lbs</span>';
+        
+        var cls = payload < 0 ? 'r-val danger' : (payload < 500 ? 'r-val warn' : 'r-val ok');
+        flyLbs.textContent = payload < 0 ? 'OVER' : fmt(payload);
+        flyLbs.className = cls;
+        flyLiters.textContent = payload < 0 ? '--' : lbsToLiters(payload);
+        flyLiters.className = cls;
+    }
+
+    // Manual slider override
+    flyFuelSlider.addEventListener('input', function() {
+        // Reset start reference so burn continues from this manual point
+        startFuel = parseFloat(flyFuelSlider.value);
+        flightStartTime = Date.now();
+        updateFlightDisplay();
+        timerEl.textContent = "00:00:00"; // Reset timer as we adjusted starting point
+    });
 
     fuelSlider.addEventListener('input', update);
     emptyInput.addEventListener('input', update);
