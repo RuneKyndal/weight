@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="214ST W&B">
-    <meta name="theme-color" content="#1a1a2e">
+    <meta name="theme-color" content="#000">
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="manifest" href="manifest.json">
     <title>Bell 214ST W&amp;B</title>
@@ -15,314 +15,250 @@
 
         body {
             margin: 0; padding: 0;
-            background: #0f0f1a;
-            color: #e0e0e0;
-            font-family: 'Courier New', Courier, monospace;
+            background: #fff;
+            color: #000;
+            font-family: sans-serif;
             position: fixed; width: 100%; height: 100%;
             overflow-y: auto; -webkit-overflow-scrolling: touch;
         }
 
         .page {
             width: 100%;
-            max-width: 520px;
-            margin: 0 auto;
             padding: 12px 10px 30px 10px;
         }
 
         /* ── Header ── */
-        .header {
+        h2 {
             text-align: center;
-            margin-bottom: 14px;
-            border-bottom: 2px solid #f0a500;
-            padding-bottom: 8px;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: clamp(1rem, 5vw, 1.4rem);
-            color: #f0a500;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-        .header p {
-            margin: 2px 0 0 0;
-            font-size: clamp(0.6rem, 2.5vw, 0.75rem);
-            color: #888;
-            letter-spacing: 1px;
+            margin: 0 0 12px 0;
+            font-size: clamp(1rem, 5vw, 1.3rem);
         }
 
-        /* ── Input section ── */
-        .inputs {
-            background: #1a1a2e;
-            border: 1px solid #333;
+        /* ── Input rows ── */
+        .input-block {
+            border: 2px solid #000;
             border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            overflow: hidden;
         }
 
         .input-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid #222;
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
             gap: 8px;
         }
         .input-row:last-child { border-bottom: none; }
 
         .input-label {
-            font-size: clamp(0.65rem, 2.8vw, 0.8rem);
-            color: #aaa;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            flex: 1 1 auto;
-            white-space: nowrap;
+            font-size: clamp(0.75rem, 3.5vw, 0.95rem);
+            font-weight: bold;
+            flex: 1;
         }
 
         .input-unit {
-            font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+            font-size: clamp(0.65rem, 2.5vw, 0.8rem);
             color: #666;
-            flex: 0 0 auto;
+            margin-right: 4px;
         }
 
         .fixed-val {
-            font-size: clamp(0.8rem, 3.5vw, 1rem);
-            color: #f0a500;
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
             font-weight: bold;
-            flex: 0 0 auto;
+            color: #000;
+            min-width: 70px;
             text-align: right;
-            min-width: 80px;
         }
 
         input[type="number"] {
-            background: #0f0f1a;
-            border: 1px solid #f0a500;
+            background: #f5f5f5;
+            border: 2px solid #000;
             border-radius: 6px;
-            color: #fff;
-            font-family: 'Courier New', monospace;
-            font-size: clamp(0.8rem, 3.5vw, 1rem);
+            color: #000;
+            font-family: sans-serif;
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
             font-weight: bold;
             padding: 6px 8px;
             text-align: right;
-            width: clamp(80px, 25vw, 110px);
+            width: clamp(90px, 28vw, 120px);
             outline: none;
             -webkit-appearance: none;
         }
-        input[type="number"]:focus {
-            border-color: #fff;
-        }
 
-        /* ── Summary bar ── */
-        .summary {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .sum-box {
-            background: #1a1a2e;
-            border: 1px solid #333;
+        /* ── Total weight row (between inputs and slider) ── */
+        .total-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border: 2px solid #000;
             border-radius: 10px;
-            padding: 8px 10px;
+            margin-bottom: 10px;
+        }
+        .total-label {
+            font-size: clamp(0.75rem, 3.5vw, 0.95rem);
+            font-weight: bold;
+        }
+        .total-val {
+            font-size: clamp(1.1rem, 5vw, 1.4rem);
+            font-weight: bold;
+        }
+        .total-val.ok     { color: #008800; }
+        .total-val.danger { color: #cc0000; }
+
+        /* ── Warning ── */
+        #warn-banner {
+            display: none;
+            background: #cc0000;
+            color: #fff;
             text-align: center;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: clamp(0.75rem, 3.5vw, 0.9rem);
+            margin-bottom: 10px;
         }
-        .sum-box.highlight {
-            border-color: #f0a500;
+
+        /* ── Fuel slider section ── */
+        .fuel-section {
+            border: 2px solid #000;
+            border-radius: 10px;
+            padding: 12px 12px 16px 12px;
+            margin-bottom: 10px;
         }
-        .sum-box.danger {
-            border-color: #ff4444;
-            background: #2a1010;
+
+        .fuel-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4px;
         }
-        .sum-label {
-            font-size: clamp(0.55rem, 2.2vw, 0.65rem);
+
+        .fuel-title {
+            font-size: clamp(0.7rem, 3vw, 0.85rem);
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #666;
+        }
+
+        /* Big fuel number shown above thumb */
+        .fuel-big {
+            font-size: clamp(2rem, 12vw, 3.5rem);
+            font-weight: bold;
+            text-align: center;
+            line-height: 1;
+            margin-bottom: 6px;
+            letter-spacing: -1px;
+        }
+        .fuel-big span {
+            font-size: clamp(0.8rem, 3vw, 1rem);
+            font-weight: normal;
+            color: #666;
+            margin-left: 4px;
+        }
+
+        /* Full-width slider */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #ddd;
+            outline: none;
+            margin: 0;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #000;
+            cursor: pointer;
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 2px #000;
+        }
+
+        .fuel-minmax {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-size: clamp(0.6rem, 2.5vw, 0.75rem);
             color: #888;
+        }
+
+        /* ── Payload results ── */
+        .result-section {
+            border: 2px solid #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .result-title {
+            background: #000;
+            color: #fff;
+            text-align: center;
+            padding: 8px;
+            font-size: clamp(0.65rem, 2.8vw, 0.8rem);
+            font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 1px;
-            display: block;
-            margin-bottom: 2px;
-        }
-        .sum-val {
-            font-size: clamp(0.9rem, 4vw, 1.2rem);
-            font-weight: bold;
-            color: #f0a500;
-            display: block;
-        }
-        .sum-val.danger { color: #ff4444; }
-        .sum-val.ok     { color: #00cc66; }
-
-        /* ── Fuel selector ── */
-        .fuel-section {
-            background: #1a1a2e;
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 12px;
-        }
-
-        .section-title {
-            font-size: clamp(0.6rem, 2.5vw, 0.72rem);
-            color: #f0a500;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .fuel-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .fuel-slider {
-            flex: 1;
-            -webkit-appearance: none;
-            height: 6px;
-            border-radius: 3px;
-            background: #333;
-            outline: none;
-        }
-        .fuel-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 22px; height: 22px;
-            border-radius: 50%;
-            background: #f0a500;
-            cursor: pointer;
-        }
-
-        .fuel-input-wrap {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* ── Payload result ── */
-        .result-section {
-            background: #1a1a2e;
-            border: 1px solid #f0a500;
-            border-radius: 10px;
-            padding: 12px 10px;
-            margin-bottom: 12px;
         }
 
         .result-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 6px;
-            text-align: center;
+            grid-template-columns: 1fr 1fr;
         }
 
-        .result-item {}
-        .result-item .r-label {
-            font-size: clamp(0.55rem, 2.2vw, 0.65rem);
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: block;
-            margin-bottom: 3px;
+        .result-item {
+            padding: 16px 10px;
+            text-align: center;
+            border-right: 1px solid #ddd;
         }
-        .result-item .r-val {
-            font-size: clamp(1rem, 5vw, 1.4rem);
-            font-weight: bold;
-            color: #00cc66;
-            display: block;
-        }
-        .result-item .r-val.warn { color: #f0a500; }
-        .result-item .r-val.danger { color: #ff4444; }
-        .result-item .r-unit {
-            font-size: clamp(0.55rem, 2vw, 0.65rem);
+        .result-item:last-child { border-right: none; }
+
+        .r-label {
+            font-size: clamp(0.65rem, 2.8vw, 0.8rem);
             color: #666;
-            display: block;
-        }
-
-        /* ── Table ── */
-        .table-section {
-            background: #1a1a2e;
-            border: 1px solid #333;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-
-        .table-header {
-            padding: 8px 10px;
-            border-bottom: 1px solid #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: clamp(0.6rem, 2.5vw, 0.75rem);
-        }
-
-        thead tr {
-            background: #111;
-        }
-        thead th {
-            padding: 6px 4px;
-            color: #f0a500;
             text-transform: uppercase;
             letter-spacing: 1px;
-            font-size: clamp(0.55rem, 2.2vw, 0.65rem);
-            text-align: center;
-            border-bottom: 1px solid #333;
+            display: block;
+            margin-bottom: 4px;
         }
 
-        tbody tr {
-            border-bottom: 1px solid #1e1e2e;
-            cursor: pointer;
-            transition: background 0.1s;
-        }
-        tbody tr:hover, tbody tr.selected {
-            background: #2a2a1a;
-        }
-        tbody tr.selected td { color: #f0a500; font-weight: bold; }
-        tbody tr.over-limit td { color: #ff4444; }
-
-        tbody td {
-            padding: 5px 4px;
-            text-align: center;
-            color: #ccc;
-        }
-        tbody td:first-child { color: #fff; font-weight: bold; }
-
-        /* ── Highlight current fuel row ── */
-        tbody tr.active-fuel {
-            background: #1a2a1a;
-        }
-        tbody tr.active-fuel td { color: #00cc66; }
-
-        /* ── Warning banner ── */
-        #warn-banner {
-            display: none;
-            background: #ff4444;
-            color: #fff;
-            text-align: center;
-            padding: 8px;
-            border-radius: 8px;
+        .r-val {
+            font-size: clamp(2rem, 11vw, 3.2rem);
             font-weight: bold;
-            font-size: clamp(0.7rem, 3vw, 0.85rem);
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+            display: block;
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+        .r-val.ok     { color: #008800; }
+        .r-val.warn   { color: #cc7700; }
+        .r-val.danger { color: #cc0000; }
+
+        .r-unit {
+            font-size: clamp(0.65rem, 2.8vw, 0.8rem);
+            color: #888;
+            display: block;
+            margin-top: 4px;
         }
     </style>
 </head>
 <body>
 <div class="page">
 
-    <div class="header">
-        <h1>Bell 214ST</h1>
-        <p>Tanking Operation — Payload Table</p>
-    </div>
+    <h2>BELL 214ST — W&amp;B</h2>
 
     <!-- Warning -->
     <div id="warn-banner">⚠ OVER MAX GROSS WEIGHT</div>
 
-    <!-- Inputs -->
-    <div class="inputs">
+    <!-- Fixed + editable inputs -->
+    <div class="input-block">
         <div class="input-row">
-            <span class="input-label">Max Gross Weight</span>
+            <span class="input-label">Max Gross</span>
             <span class="input-unit">lbs</span>
             <span class="fixed-val">17,500</span>
         </div>
@@ -343,70 +279,43 @@
         </div>
     </div>
 
-    <!-- Fuel selector -->
+    <!-- Total weight -->
+    <div class="total-row">
+        <span class="total-label">Total Weight (with fuel)</span>
+        <div style="display:flex;align-items:baseline;gap:6px;">
+            <span class="total-val ok" id="total-weight">--</span>
+            <span class="input-unit">lbs</span>
+        </div>
+    </div>
+
+    <!-- Fuel slider -->
     <div class="fuel-section">
-        <span class="section-title">Fuel Load</span>
-        <div class="fuel-row">
-            <input type="range" class="fuel-slider" id="fuel-slider" min="500" max="3000" step="100" value="2000">
-            <div class="fuel-input-wrap">
-                <input type="number" id="fuel-input" value="2000" min="500" max="3000" step="100">
-                <span class="input-unit">lbs</span>
-            </div>
+        <div class="fuel-top">
+            <span class="fuel-title">Fuel Load</span>
+        </div>
+        <div class="fuel-big" id="fuel-display">2,000 <span>lbs</span></div>
+        <input type="range" id="fuel-slider" min="500" max="3000" step="100" value="2000">
+        <div class="fuel-minmax">
+            <span>500 lbs</span>
+            <span>3,000 lbs</span>
         </div>
     </div>
 
-    <!-- Summary -->
-    <div class="summary">
-        <div class="sum-box highlight">
-            <span class="sum-label">Total Weight</span>
-            <span class="sum-val" id="total-weight">--</span>
-            <span class="input-unit">lbs</span>
-        </div>
-        <div class="sum-box highlight">
-            <span class="sum-label">Max Payload</span>
-            <span class="sum-val" id="max-payload">--</span>
-            <span class="input-unit">lbs</span>
-        </div>
-    </div>
-
-    <!-- Payload result -->
+    <!-- Payload results -->
     <div class="result-section">
-        <span class="section-title">Available Payload at Selected Fuel</span>
+        <div class="result-title">Available Payload</div>
         <div class="result-grid">
             <div class="result-item">
                 <span class="r-label">Payload</span>
-                <span class="r-val" id="res-lbs">--</span>
+                <span class="r-val ok" id="res-lbs">--</span>
                 <span class="r-unit">lbs</span>
             </div>
             <div class="result-item">
                 <span class="r-label">Water</span>
-                <span class="r-val" id="res-liters">--</span>
+                <span class="r-val ok" id="res-liters">--</span>
                 <span class="r-unit">liters</span>
             </div>
-            <div class="result-item">
-                <span class="r-label">Water</span>
-                <span class="r-val" id="res-kg">--</span>
-                <span class="r-unit">kg</span>
-            </div>
         </div>
-    </div>
-
-    <!-- Full table -->
-    <div class="table-section">
-        <div class="table-header">
-            <span class="section-title" style="margin:0;">Full Payload Table</span>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Fuel (lbs)</th>
-                    <th>Payload (lbs)</th>
-                    <th>Liters</th>
-                    <th>kg</th>
-                </tr>
-            </thead>
-            <tbody id="table-body"></tbody>
-        </table>
     </div>
 
 </div>
@@ -420,133 +329,64 @@
         });
     }
 
-    var MAX_GROSS = 17500;
-    // Fuel steps from the table (500 to 3000 in 100lb steps)
-    var FUEL_STEPS = [];
-    for (var f = 3000; f >= 500; f -= 100) { FUEL_STEPS.push(f); }
-
+    var MAX_GROSS   = 17500;
     var emptyInput  = document.getElementById('empty-weight');
     var crewInput   = document.getElementById('crew-gear');
-    var basicAcSpan = document.getElementById('basic-ac');
     var fuelSlider  = document.getElementById('fuel-slider');
-    var fuelInput   = document.getElementById('fuel-input');
+    var basicAcSpan = document.getElementById('basic-ac');
+    var fuelDisplay = document.getElementById('fuel-display');
+    var totalWtEl   = document.getElementById('total-weight');
     var warnBanner  = document.getElementById('warn-banner');
-
-    // Conversion: 1 lbs water = 0.4536 kg = 0.4536 liters (water density ~1kg/L)
-    function lbsToLiters(lbs) { return Math.round(lbs * 0.4536); }
-    function lbsToKg(lbs)     { return Math.round(lbs * 0.4536); }
-
-    function getBasicAc() {
-        return (parseFloat(emptyInput.value) || 0) + (parseFloat(crewInput.value) || 0);
-    }
-
-    function getFuel() {
-        return parseFloat(fuelInput.value) || 0;
-    }
-
-    function calcPayload(fuel) {
-        var basic   = getBasicAc();
-        var total   = basic + fuel;
-        var payload = MAX_GROSS - total;
-        return payload;
-    }
+    var resLbs      = document.getElementById('res-lbs');
+    var resLiters   = document.getElementById('res-liters');
 
     function fmt(n) {
-        return n.toLocaleString();
+        return Math.round(n).toLocaleString();
+    }
+
+    // 1 lb water = 0.4536 liters (density of water ~1 kg/L, 1 lb = 0.4536 kg)
+    function lbsToLiters(lbs) {
+        return Math.round(lbs * 0.4536);
     }
 
     function update() {
-        var basic   = getBasicAc();
-        var fuel    = getFuel();
+        var empty   = parseFloat(emptyInput.value) || 0;
+        var crew    = parseFloat(crewInput.value)  || 0;
+        var fuel    = parseFloat(fuelSlider.value) || 0;
+        var basic   = empty + crew;
         var total   = basic + fuel;
         var payload = MAX_GROSS - total;
-        var maxP    = MAX_GROSS - basic;
 
-        // Basic A/C display
+        // Basic A/C
         basicAcSpan.textContent = fmt(basic);
 
-        // Summary
-        var twEl = document.getElementById('total-weight');
-        var mpEl = document.getElementById('max-payload');
-        twEl.textContent = fmt(total);
-        mpEl.textContent = fmt(maxP < 0 ? 0 : maxP);
+        // Fuel display (big number above slider)
+        fuelDisplay.innerHTML = fmt(fuel) + ' <span>lbs</span>';
 
-        // Over gross warning
+        // Total weight
+        totalWtEl.textContent = fmt(total);
         if (total > MAX_GROSS) {
+            totalWtEl.className = 'total-val danger';
             warnBanner.style.display = 'block';
-            twEl.className = 'sum-val danger';
         } else {
+            totalWtEl.className = 'total-val ok';
             warnBanner.style.display = 'none';
-            twEl.className = 'sum-val ok';
         }
 
-        // Result boxes
-        var resLbs    = document.getElementById('res-lbs');
-        var resLiters = document.getElementById('res-liters');
-        var resKg     = document.getElementById('res-kg');
-
-        var p = Math.max(0, payload);
-        resLbs.textContent    = fmt(Math.round(payload));
-        resLiters.textContent = lbsToLiters(p);
-        resKg.textContent     = lbsToKg(p);
-
+        // Payload colour
         var cls = payload < 0 ? 'r-val danger' : (payload < 500 ? 'r-val warn' : 'r-val ok');
-        resLbs.className = resLiters.className = resKg.className = cls;
 
-        // Rebuild table
-        buildTable(fuel, basic);
+        resLbs.textContent    = payload < 0 ? 'OVER' : fmt(payload);
+        resLbs.className      = cls;
+
+        resLiters.textContent = payload < 0 ? '--' : lbsToLiters(payload);
+        resLiters.className   = cls;
     }
 
-    function buildTable(selectedFuel, basic) {
-        var tbody = document.getElementById('table-body');
-        var html  = '';
-
-        FUEL_STEPS.forEach(function(f) {
-            var payload = MAX_GROSS - basic - f;
-            var liters  = lbsToLiters(Math.max(0, payload));
-            var kg      = lbsToKg(Math.max(0, payload));
-            var isSelected = (f === selectedFuel);
-            var overLimit  = payload < 0;
-
-            var rowClass = isSelected ? 'active-fuel' : (overLimit ? 'over-limit' : '');
-
-            html += '<tr class="' + rowClass + '" onclick="selectFuel(' + f + ')">';
-            html += '<td>' + fmt(f) + '</td>';
-            html += '<td>' + (overLimit ? '<span style="color:#ff4444">OVER</span>' : fmt(Math.round(payload))) + '</td>';
-            html += '<td>' + (overLimit ? '--' : liters) + '</td>';
-            html += '<td>' + (overLimit ? '--' : kg) + '</td>';
-            html += '</tr>';
-        });
-
-        tbody.innerHTML = html;
-    }
-
-    function selectFuel(f) {
-        fuelInput.value  = f;
-        fuelSlider.value = f;
-        update();
-    }
-
-    // Sync slider and input
-    fuelSlider.addEventListener('input', function() {
-        // Round to nearest 100
-        var v = Math.round(this.value / 100) * 100;
-        fuelInput.value = v;
-        update();
-    });
-
-    fuelInput.addEventListener('input', function() {
-        var v = parseFloat(this.value) || 0;
-        if (v < 500) v = 500;
-        if (v > 3000) v = 3000;
-        fuelSlider.value = v;
-        update();
-    });
-
+    fuelSlider.addEventListener('input', update);
     emptyInput.addEventListener('input', update);
-    crewInput.addEventListener('input', update);
+    crewInput.addEventListener('input',  update);
 
-    // Init
     update();
 </script>
 </body>
